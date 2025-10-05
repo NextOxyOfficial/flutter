@@ -12,12 +12,14 @@ import 'package:flutter_devicelab/framework/framework.dart';
 import 'package:flutter_devicelab/framework/task_result.dart';
 import 'package:flutter_devicelab/framework/utils.dart';
 import 'package:path/path.dart' as path;
+<<<<<<< HEAD
+=======
+import 'package:pub_semver/pub_semver.dart';
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
 
 final String gradlew = Platform.isWindows ? 'gradlew.bat' : 'gradlew';
-final String gradlewExecutable =
-    Platform.isWindows ? '.\\$gradlew' : './$gradlew';
+final String gradlewExecutable = Platform.isWindows ? '.\\$gradlew' : './$gradlew';
 final String fileReadWriteMode = Platform.isWindows ? 'rw-rw-rw-' : 'rw-r--r--';
-final String platformLineSep = Platform.isWindows ? '\r\n' : '\n';
 
 /// Combines several TaskFunctions with trivial success value into one.
 TaskFunction combine(List<TaskFunction> tasks) {
@@ -35,12 +37,27 @@ TaskFunction combine(List<TaskFunction> tasks) {
 /// Tests that the Flutter module project template works and supports
 /// adding Flutter to an existing Android app.
 class ModuleTest {
+<<<<<<< HEAD
+<<<<<<<< HEAD:dev/devicelab/bin/tasks/build_android_host_app_with_module_aar.dart
   ModuleTest({
     this.gradleVersion = '7.6.3',
   });
+========
+  ModuleTest({this.gradleVersion = '7.6.3'});
+>>>>>>>> ac4e799d237041cf905519190471f657b657155a:dev/devicelab/bin/tasks/build_android_host_app_with_module_source.dart
 
   static const String buildTarget = 'module-gradle';
   final String gradleVersion;
+=======
+  ModuleTest({this.gradleVersion = '7.6.3', Version? agpVersion})
+    : agpVersion = agpVersion ?? Version(8, 3, 0);
+
+  static const String buildTarget = 'module-gradle';
+  // gradleVersion is a String because gradle does not follow dart semver
+  // rules for rc candidates.
+  final String gradleVersion;
+  final Version agpVersion;
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
   final StringBuffer stdout = StringBuffer();
   final StringBuffer stderr = StringBuffer();
 
@@ -67,9 +84,11 @@ class ModuleTest {
           stderr: stderr,
         );
       });
+<<<<<<< HEAD
 
       section('Create package with native assets');
 
+<<<<<<<< HEAD:dev/devicelab/bin/tasks/build_android_host_app_with_module_aar.dart
       await flutter(
         'config',
         options: <String>['--enable-native-assets'],
@@ -77,6 +96,14 @@ class ModuleTest {
         stderr: stderr,
       );
 
+========
+>>>>>>>> ac4e799d237041cf905519190471f657b657155a:dev/devicelab/bin/tasks/build_android_host_app_with_module_source.dart
+=======
+      print('Created template in $tempDir.');
+
+      section('Create package with native assets');
+
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
       const String ffiPackageName = 'ffi_package';
       await createFfiPackage(ffiPackageName, tempDir);
 
@@ -85,59 +112,83 @@ class ModuleTest {
       final File pubspec = File(path.join(projectDir.path, 'pubspec.yaml'));
       String content = await pubspec.readAsString();
       content = content.replaceFirst(
-        'dependencies:$platformLineSep',
-        'dependencies:$platformLineSep  $ffiPackageName:$platformLineSep    path: ..${Platform.pathSeparator}$ffiPackageName$platformLineSep',
+        'dependencies:${Platform.lineTerminator}',
+        'dependencies:${Platform.lineTerminator}  $ffiPackageName:${Platform.lineTerminator}    path: ..${Platform.pathSeparator}$ffiPackageName${Platform.lineTerminator}',
       );
       await pubspec.writeAsString(content, flush: true);
       await inDirectory(projectDir, () async {
+<<<<<<< HEAD
+<<<<<<<< HEAD:dev/devicelab/bin/tasks/build_android_host_app_with_module_aar.dart
         await flutter(
           'packages',
           options: <String>['get'],
           output: stdout,
           stderr: stderr,
         );
+========
+        await flutter('packages', options: <String>['get'], output: stdout, stderr: stderr);
+>>>>>>>> ac4e799d237041cf905519190471f657b657155a:dev/devicelab/bin/tasks/build_android_host_app_with_module_source.dart
+=======
+        await flutter('packages', options: <String>['get'], output: stdout, stderr: stderr);
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
       });
 
       section('Add read-only asset');
 
-      final File readonlyTxtAssetFile = await File(path.join(
-        projectDir.path,
-        'assets',
-        'read-only.txt'
-      ))
-      .create(recursive: true);
+      final File readonlyTxtAssetFile = await File(
+        path.join(projectDir.path, 'assets', 'read-only.txt'),
+      ).create(recursive: true);
 
       if (!exists(readonlyTxtAssetFile)) {
         return TaskResult.failure('Failed to create read-only asset');
       }
 
       if (!Platform.isWindows) {
-        await exec('chmod', <String>[
-          '444',
-          readonlyTxtAssetFile.path,
-        ]);
+        await exec('chmod', <String>['444', readonlyTxtAssetFile.path]);
       }
 
       content = content.replaceFirst(
-        '$platformLineSep  # assets:$platformLineSep',
-        '$platformLineSep  assets:$platformLineSep    - assets/read-only.txt$platformLineSep',
+        '${Platform.lineTerminator}  # assets:${Platform.lineTerminator}',
+        '${Platform.lineTerminator}  assets:${Platform.lineTerminator}    - assets/read-only.txt${Platform.lineTerminator}',
       );
       await pubspec.writeAsString(content, flush: true);
 
       section('Add plugins');
 
       content = content.replaceFirst(
-        '${platformLineSep}dependencies:$platformLineSep',
-        '${platformLineSep}dependencies:$platformLineSep',
+        '${Platform.lineTerminator}dependencies:${Platform.lineTerminator}',
+        '${Platform.lineTerminator}dependencies:${Platform.lineTerminator}',
       );
       await pubspec.writeAsString(content, flush: true);
       await inDirectory(projectDir, () async {
+<<<<<<< HEAD
+<<<<<<<< HEAD:dev/devicelab/bin/tasks/build_android_host_app_with_module_aar.dart
         await flutter(
           'packages',
           options: <String>['get'],
           output: stdout,
           stderr: stderr,
         );
+========
+        await flutter('packages', options: <String>['get'], output: stdout, stderr: stderr);
+>>>>>>>> ac4e799d237041cf905519190471f657b657155a:dev/devicelab/bin/tasks/build_android_host_app_with_module_source.dart
+      });
+
+      section('Build ephemeral host app');
+
+      await inDirectory(projectDir, () async {
+<<<<<<<< HEAD:dev/devicelab/bin/tasks/build_android_host_app_with_module_aar.dart
+        await flutter(
+          'build',
+          options: <String>['apk'],
+          output: stdout,
+          stderr: stderr,
+        );
+========
+        await flutter('build', options: <String>['apk'], output: stdout, stderr: stderr);
+>>>>>>>> ac4e799d237041cf905519190471f657b657155a:dev/devicelab/bin/tasks/build_android_host_app_with_module_source.dart
+=======
+        await flutter('packages', options: <String>['get'], output: stdout, stderr: stderr);
       });
 
       // TODO(dacoharkes): Implement Add2app. https://github.com/flutter/flutter/issues/129757
@@ -148,19 +199,23 @@ class ModuleTest {
         await exec(
           gradlewExecutable,
           <String>['flutter:assembleDebug'],
-          environment: <String, String>{ 'JAVA_HOME': javaHome },
+          environment: <String, String>{'JAVA_HOME': javaHome},
         );
       });
 
-      final bool aarBuilt = exists(File(path.join(
-        projectDir.path,
-        '.android',
-        'Flutter',
-        'build',
-        'outputs',
-        'aar',
-        'flutter-debug.aar',
-      )));
+      final bool aarBuilt = exists(
+        File(
+          path.join(
+            projectDir.path,
+            '.android',
+            'Flutter',
+            'build',
+            'outputs',
+            'aar',
+            'flutter-debug.aar',
+          ),
+        ),
+      );
 
       if (!aarBuilt) {
         return TaskResult.failure('Failed to build .aar');
@@ -169,23 +224,23 @@ class ModuleTest {
       section('Build ephemeral host app');
 
       await inDirectory(projectDir, () async {
-        await flutter(
-          'build',
-          options: <String>['apk'],
-          output: stdout,
-          stderr: stderr,
-        );
+        await flutter('build', options: <String>['apk'], output: stdout, stderr: stderr);
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
       });
 
-      final bool ephemeralHostApkBuilt = exists(File(path.join(
-        projectDir.path,
-        'build',
-        'host',
-        'outputs',
-        'apk',
-        'release',
-        'app-release.apk',
-      )));
+      final bool ephemeralHostApkBuilt = exists(
+        File(
+          path.join(
+            projectDir.path,
+            'build',
+            'host',
+            'outputs',
+            'apk',
+            'release',
+            'app-release.apk',
+          ),
+        ),
+      );
 
       if (!ephemeralHostApkBuilt) {
         return TaskResult.failure('Failed to build ephemeral host .apk');
@@ -194,6 +249,8 @@ class ModuleTest {
       section('Clean build');
 
       await inDirectory(projectDir, () async {
+<<<<<<< HEAD
+<<<<<<<< HEAD:dev/devicelab/bin/tasks/build_android_host_app_with_module_aar.dart
         await flutter(
           'clean',
           output: stdout,
@@ -210,33 +267,65 @@ class ModuleTest {
           output: stdout,
           stderr: stderr,
         );
+========
+        await flutter('clean', output: stdout, stderr: stderr);
+>>>>>>>> ac4e799d237041cf905519190471f657b657155a:dev/devicelab/bin/tasks/build_android_host_app_with_module_source.dart
+=======
+        await flutter('clean', output: stdout, stderr: stderr);
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
       });
 
       section('Build editable host app');
 
       await inDirectory(projectDir, () async {
+<<<<<<< HEAD
+<<<<<<<< HEAD:dev/devicelab/bin/tasks/build_android_host_app_with_module_aar.dart
         await flutter(
           'build',
           options: <String>['apk'],
           output: stdout,
           stderr: stderr,
         );
+========
+        await flutter('build', options: <String>['apk'], output: stdout, stderr: stderr);
+>>>>>>>> ac4e799d237041cf905519190471f657b657155a:dev/devicelab/bin/tasks/build_android_host_app_with_module_source.dart
+=======
+        await flutter('build', options: <String>['apk'], output: stdout, stderr: stderr);
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
       });
 
-      final bool editableHostApkBuilt = exists(File(path.join(
-        projectDir.path,
-        'build',
-        'host',
-        'outputs',
-        'apk',
-        'release',
-        'app-release.apk',
-      )));
+      final bool editableHostApkBuilt = exists(
+        File(
+          path.join(
+            projectDir.path,
+            'build',
+            'host',
+            'outputs',
+            'apk',
+            'release',
+            'app-release.apk',
+          ),
+        ),
+      );
 
       if (!editableHostApkBuilt) {
         return TaskResult.failure('Failed to build editable host .apk');
       }
 
+<<<<<<< HEAD
+=======
+      section('Flutter build aar succeeds');
+
+      await inDirectory(projectDir, () async {
+        await flutter(
+          'build',
+          options: <String>['aar', '--no-profile'],
+          output: stdout,
+          stderr: stderr,
+        );
+      });
+
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
       section('Add to existing Android app');
 
       final Directory hostApp = Directory(path.join(tempDir.path, 'hello_host_app'));
@@ -248,47 +337,66 @@ class ModuleTest {
             'dev',
             'integration_tests',
             'pure_android_host_apps',
+<<<<<<< HEAD
+<<<<<<<< HEAD:dev/devicelab/bin/tasks/build_android_host_app_with_module_aar.dart
             'android_host_app_v2_embedding',
+========
+            'host_app_kotlin_gradle_dsl',
+>>>>>>>> ac4e799d237041cf905519190471f657b657155a:dev/devicelab/bin/tasks/build_android_host_app_with_module_source.dart
+=======
+            'android_host_app_v2_embedding',
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
           ),
         ),
         hostApp,
       );
+      copy(File(path.join(projectDir.path, '.android', gradlew)), hostApp);
       copy(
-        File(path.join(projectDir.path, '.android', gradlew)),
-        hostApp,
-      );
-      copy(
-        File(path.join(projectDir.path, '.android', 'gradle', 'wrapper',
-            'gradle-wrapper.jar')),
+        File(path.join(projectDir.path, '.android', 'gradle', 'wrapper', 'gradle-wrapper.jar')),
         Directory(path.join(hostApp.path, 'gradle', 'wrapper')),
       );
 
+<<<<<<< HEAD
       // Modify gradle version to passed in version.
       // This is somehow the wrong file.
-      final File gradleWrapperProperties = File(path.join(
-          hostApp.path, 'gradle', 'wrapper', 'gradle-wrapper.properties'));
-      String propertyContent = await gradleWrapperProperties.readAsString();
-      propertyContent = propertyContent.replaceFirst(
-        'REPLACEME',
-        gradleVersion,
+=======
+      // Modify gradle version to the passed in version.
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
+      final File gradleWrapperProperties = File(
+        path.join(hostApp.path, 'gradle', 'wrapper', 'gradle-wrapper.properties'),
       );
+      String propertyContent = await gradleWrapperProperties.readAsString();
+      propertyContent = propertyContent.replaceFirst('REPLACEME', gradleVersion);
+<<<<<<< HEAD
       section(propertyContent);
       await gradleWrapperProperties.writeAsString(propertyContent, flush: true);
 
-      final File analyticsOutputFile =
-          File(path.join(tempDir.path, 'analytics.log'));
+=======
+      section('Modify gradle wrapper file contents');
+      await gradleWrapperProperties.writeAsString(propertyContent, flush: true);
 
+      // Modify AGP version to the passed in version.
+      final File topBuildDotGradle = File(path.join(hostApp.path, 'build.gradle'));
+      String topBuildContent = await topBuildDotGradle.readAsString();
+      topBuildContent = topBuildContent.replaceFirst('REPLACEME', agpVersion.toString());
+      section(topBuildContent);
+      await topBuildDotGradle.writeAsString(topBuildContent, flush: true);
+
+      final bool greaterThanOrEqualToGradle83 = agpVersion.compareTo(Version(8, 3, 0)) >= 0;
+
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
       section('Build debug host APK');
 
       await inDirectory(hostApp, () async {
         if (!Platform.isWindows) {
           await exec('chmod', <String>['+x', 'gradlew']);
         }
-        await exec(gradlewExecutable,
+        await exec(
+          gradlewExecutable,
           <String>['app:assembleDebug'],
           environment: <String, String>{
             'JAVA_HOME': javaHome,
-            'FLUTTER_ANALYTICS_LOG_FILE': analyticsOutputFile.path,
+            'FLUTTER_SUPPRESS_ANALYTICS': 'true',
           },
         );
       });
@@ -324,23 +432,17 @@ class ModuleTest {
       if (!androidManifestDebug.contains('''
         <meta-data
             android:name="flutterProjectType"
-            android:value="module" />''')
-      ) {
-        return TaskResult.failure("Debug host APK doesn't contain metadata: flutterProjectType = module ");
-      }
-
-      final String analyticsOutput = analyticsOutputFile.readAsStringSync();
-      if (!analyticsOutput.contains('cd24: android')
-          || !analyticsOutput.contains('cd25: true')
-          || !analyticsOutput.contains('viewName: assemble')) {
+            android:value="module" />''')) {
         return TaskResult.failure(
-          'Building outer app produced the following analytics: "$analyticsOutput" '
-          'but not the expected strings: "cd24: android", "cd25: true" and '
-          '"viewName: assemble"'
+          "Debug host APK doesn't contain metadata: flutterProjectType = module ",
         );
       }
 
+<<<<<<< HEAD
       section('Check file access modes for read-only asset from Flutter module');
+=======
+      section('Check file access modes for Debug read-only asset from Flutter module');
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
 
       final String readonlyDebugAssetFilePath = path.joinAll(<String>[
         hostApp.path,
@@ -349,13 +451,25 @@ class ModuleTest {
         'intermediates',
         'assets',
         'debug',
+<<<<<<< HEAD
+        'mergeDebugAssets',
+=======
+        ...greaterThanOrEqualToGradle83 ? <String>['mergeDebugAssets'] : <String>[],
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
         'flutter_assets',
         'assets',
         'read-only.txt',
       ]);
+<<<<<<< HEAD
       final File readonlyDebugAssetFile = File(readonlyDebugAssetFilePath);
       if (!exists(readonlyDebugAssetFile)) {
         return TaskResult.failure('Failed to copy read-only asset file');
+=======
+      // ./app/build/intermediates/assets/debug/mergeDebugAssets/flutter_assets/assets/read-only.txt
+      final File readonlyDebugAssetFile = File(readonlyDebugAssetFilePath);
+      if (!exists(readonlyDebugAssetFile)) {
+        return TaskResult.failure('Failed to copy read-only debug asset file');
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
       }
 
       String modes = readonlyDebugAssetFile.statSync().modeString();
@@ -367,11 +481,12 @@ class ModuleTest {
       section('Build release host APK');
 
       await inDirectory(hostApp, () async {
-        await exec(gradlewExecutable,
+        await exec(
+          gradlewExecutable,
           <String>['app:assembleRelease'],
           environment: <String, String>{
             'JAVA_HOME': javaHome,
-            'FLUTTER_ANALYTICS_LOG_FILE': analyticsOutputFile.path,
+            'FLUTTER_SUPPRESS_ANALYTICS': 'true',
           },
         );
       });
@@ -426,12 +541,17 @@ class ModuleTest {
       if (!androidManifestRelease.contains('''
         <meta-data
             android:name="flutterProjectType"
-            android:value="module" />''')
-      ) {
-        return TaskResult.failure("Release host APK doesn't contain metadata: flutterProjectType = module ");
+            android:value="module" />''')) {
+        return TaskResult.failure(
+          "Release host APK doesn't contain metadata: flutterProjectType = module ",
+        );
       }
 
+<<<<<<< HEAD
       section('Check file access modes for read-only asset from Flutter module');
+=======
+      section('Check file access modes for release read-only asset from Flutter module');
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
 
       final String readonlyReleaseAssetFilePath = path.joinAll(<String>[
         hostApp.path,
@@ -440,13 +560,22 @@ class ModuleTest {
         'intermediates',
         'assets',
         'release',
+<<<<<<< HEAD
+        'mergeReleaseAssets',
+=======
+        ...greaterThanOrEqualToGradle83 ? <String>['mergeReleaseAssets'] : <String>[],
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
         'flutter_assets',
         'assets',
         'read-only.txt',
       ]);
       final File readonlyReleaseAssetFile = File(readonlyReleaseAssetFilePath);
       if (!exists(readonlyReleaseAssetFile)) {
+<<<<<<< HEAD
         return TaskResult.failure('Failed to copy read-only asset file');
+=======
+        return TaskResult.failure('Failed to copy read-only release asset file');
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
       }
 
       modes = readonlyReleaseAssetFile.statSync().modeString();
@@ -464,7 +593,8 @@ class ModuleTest {
       return TaskResult.success(null);
     } on TaskResult catch (taskResult) {
       return taskResult;
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Task exception stack trace:\n$stackTrace');
       return TaskResult.failure(e.toString());
     } finally {
       rmTree(tempDir);
@@ -473,9 +603,25 @@ class ModuleTest {
 }
 
 Future<void> main() async {
+<<<<<<< HEAD
+<<<<<<<< HEAD:dev/devicelab/bin/tasks/build_android_host_app_with_module_aar.dart
   await task(combine(<TaskFunction>[
     // ignore: avoid_redundant_argument_values
     ModuleTest(gradleVersion: '8.4').call,
     ModuleTest(gradleVersion: '8.4-rc-3').call,
   ]));
+========
+  await task(combine(<TaskFunction>[ModuleTest(gradleVersion: '8.7').call]));
+>>>>>>>> ac4e799d237041cf905519190471f657b657155a:dev/devicelab/bin/tasks/build_android_host_app_with_module_source.dart
+=======
+  await task(
+    combine(<TaskFunction>[
+      // 3 tests comes close to timeout.
+      // Pre AGP 8.3
+      ModuleTest(gradleVersion: '8.4', agpVersion: Version.parse('8.2.1')).call,
+      // Post AGP 8.3 + rc candidates can work
+      ModuleTest(gradleVersion: '8.13-rc-1', agpVersion: Version.parse('8.8.1')).call,
+    ]),
+  );
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
 }

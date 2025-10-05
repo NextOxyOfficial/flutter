@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 // has the default outlined border and demos using the
 // [DropdownMenuEntry] style parameter to customize its appearance.
 // The second dropdown menu customizes the appearance of the dropdown
-// menu's text field with its [InputDecorationTheme] parameter.
+// menu's text field with its [DropdownMenu.inputDecorationTheme] parameter.
 
 void main() {
   runApp(const DropdownMenuExample());
@@ -25,8 +25,26 @@ enum ColorLabel {
   const ColorLabel(this.label, this.color);
   final String label;
   final Color color;
+<<<<<<< HEAD
 }
 
+=======
+
+  static final List<ColorEntry> entries = UnmodifiableListView<ColorEntry>(
+    values.map<ColorEntry>(
+      (ColorLabel color) => ColorEntry(
+        value: color,
+        label: color.label,
+        enabled: color.label != 'Grey',
+        style: MenuItemButton.styleFrom(foregroundColor: color.color),
+      ),
+    ),
+  );
+}
+
+typedef IconEntry = DropdownMenuEntry<IconLabel>;
+
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
 // DropdownMenuEntry labels and values for the second dropdown menu.
 enum IconLabel {
   smile('Smile', Icons.sentiment_satisfied_outlined),
@@ -40,6 +58,15 @@ enum IconLabel {
   const IconLabel(this.label, this.icon);
   final String label;
   final IconData icon;
+<<<<<<< HEAD
+=======
+
+  static final List<IconEntry> entries = UnmodifiableListView<IconEntry>(
+    values.map<IconEntry>(
+      (IconLabel icon) => IconEntry(value: icon, label: icon.label, leadingIcon: Icon(icon.icon)),
+    ),
+  );
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
 }
 
 class DropdownMenuExample extends StatefulWidget {
@@ -58,16 +85,14 @@ class _DropdownMenuExampleState extends State<DropdownMenuExample> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.green,
-      ),
+      theme: ThemeData(colorSchemeSeed: Colors.green),
       home: Scaffold(
         body: SafeArea(
           child: Column(
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
+<<<<<<< HEAD
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -125,24 +150,69 @@ class _DropdownMenuExampleState extends State<DropdownMenuExample> {
                       ).toList(),
                     ),
                   ],
+=======
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      DropdownMenu<ColorLabel>(
+                        initialSelection: ColorLabel.green,
+                        controller: colorController,
+                        // The default requestFocusOnTap value depends on the platform.
+                        // On mobile, it defaults to false, and on desktop, it defaults to true.
+                        // Setting this to true will trigger a focus request on the text field, and
+                        // the virtual keyboard will appear afterward.
+                        requestFocusOnTap: true,
+                        label: const Text('Color'),
+                        onSelected: (ColorLabel? color) {
+                          setState(() {
+                            selectedColor = color;
+                          });
+                        },
+                        dropdownMenuEntries: ColorLabel.entries,
+                      ),
+                      const SizedBox(width: 24),
+                      DropdownMenu<IconLabel>(
+                        controller: iconController,
+                        enableFilter: true,
+                        requestFocusOnTap: true,
+                        leadingIcon: const Icon(Icons.search),
+                        label: const Text('Icon'),
+                        inputDecorationTheme: const InputDecorationTheme(
+                          filled: true,
+                          contentPadding: EdgeInsets.symmetric(vertical: 5.0),
+                        ),
+                        onSelected: (IconLabel? icon) {
+                          setState(() {
+                            selectedIcon = icon;
+                          });
+                        },
+                        dropdownMenuEntries: IconLabel.entries,
+                      ),
+                    ],
+                  ),
+>>>>>>> ac4e799d237041cf905519190471f657b657155a
                 ),
               ),
               if (selectedColor != null && selectedIcon != null)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text('You selected a ${selectedColor?.label} ${selectedIcon?.label}'),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Icon(
-                        selectedIcon?.icon,
-                        color: selectedColor?.color,
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text('You selected a ${selectedColor?.label} ${selectedIcon?.label}'),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Icon(selectedIcon?.icon, color: selectedColor?.color),
                       ),
-                    )
-                  ],
+                    ],
+                  ),
                 )
               else
-                const Text('Please select a color and an icon.')
+                const Text('Please select a color and an icon.'),
             ],
           ),
         ),
